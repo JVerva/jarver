@@ -1,4 +1,8 @@
-TARGET := example
+CLIENT := client
+SERVER := server
+
+CLIENT_DEPENDENCIES := testclient.o
+SERVER_DEPENDENCIES := testserver.o
 
 EXTENSION := cpp
 CC := g++
@@ -8,28 +12,14 @@ OBJDIR := obj
 SRCDIR := src
 BINDIR := bin
 LIBDIR := lib
-ASMDIR := asm
 
-SRCFILES := $(shell find $(SRCDIR) -type f \( -iname "*.$(EXTENSION)" \) -exec basename \{} \;)
-HEADERFILES := $(shell find $(INCLUDEDIR) -type f \( -iname "*.h" \) -exec basename \{} \;)
-OBJFILES := $(SRCFILES:%.$(EXTENSION)=%.o)
-
-MACROS := MAKE
-BASEFLAGS := $(addprefix -D ,$(MACROS))
-DEBUGFLAGS := $(BASEFLAGS) -g -Wall
-RELEASEFLAGS := $(BASEFLAGS) -O2
-
-FLAGS :=
-A :=
-
-debug: FLAGS = $(DEBUGFLAGS)
-debug: clean setup $(TARGET)
-
-release: FLAGS = $(RELEASEFLAGS)
-release: clean setup $(TARGET)
+FLAGS := 
+A := 
 
 #build target
-$(TARGET): $(OBJFILES)
+$(CLIENT): $(CLIENT_DEPENDENCIES)
+	$(CC) $(FLAGS) $(addprefix $(OBJDIR)/,$^) -o $(addprefix $(BINDIR)/,$@)
+$(SERVER): $(SERVER_DEPENDENCIES)
 	$(CC) $(FLAGS) $(addprefix $(OBJDIR)/,$^) -o $(addprefix $(BINDIR)/,$@)
 
 
@@ -54,34 +44,10 @@ setup:
 	mkdir -p $(LIBDIR)
 
 
-#print makefile info
-info:
-	@echo TARGET = $(TARGET)
-	@echo EXTENSION = $(EXTENSION)
-	@echo INCLUDEDIR = $(INCLUDEDIR)
-	@echo OBJDIR = $(OBJDIR)
-	@echo SRCDIR = $(SRCDIR)
-	@echo BINDIR = $(BINDIR)
-	@echo LIBDIR = $(LIBDIR)
-	@echo ASMDIR = $(ASMDIR)
-	@echo SRCFILES = $(SRCFILES)
-	@echo HEADERFILES = $(HEADERFILES)
-	@echo MACROS = $(MACROS)
-	@echo DEBUGFLAGS = $(DEBUGFLAGS)
-	@echo RELEASEFLAGS = $(RELEASEFLAGS)
-	@echo CC = $(CC)
-
-
 #give execution permissions
 permissions:
-	chmod a+x $(BINDIR)/$(TARGET)
-
-
-#make assembly files
-%.s: $(SRCDIR)/%.$(EXTENSION)
-	$(CC) $(FLAGS) -o $(addprefix $(ASMDIR)/,$@) -S $^ -I $(INCLUDEDIR)
-%.s: $(SRCDIR)/**/%.$(EXTENSION)
-	$(CC) $(FLAGS) -o $(addprefix $(ASMDIR)/,$@) -S $^ -I $(INCLUDEDIR)
+	chmod a+x $(BINDIR)/$(CLIENT)
+	chmod a+x $(BINDIR)/$(SERVER)
 
 
 #create delete files
@@ -96,13 +62,11 @@ r:
 
 
 #exec with std args
-exec:
-	@$(BINDIR)/$(TARGET) $$(cat args.txt)
+exec_server:
+	@$(BINDIR)/$(SERVER) $$(cat server.txt)
 
-
-#run valgrind
-valgrind:
-	valgrind --leak-check=full $(BINDIR)/$(TARGET)
+exec_client:
+	@$(BINDIR)/$(CLIENT) $$(cat client.txt)
 
 
 #get todo list

@@ -6,7 +6,7 @@
 
 #define PORT "3000"
 
-void main(){
+int main(){
 
     //this client address info
     struct addrinfo *clinfo;
@@ -62,5 +62,5 @@ void main(){
         bytes_sent += send(socketfd, message.c_str() + bytes_sent, message.size()+1-bytes_sent, 0);
     }while(bytes_sent < message.size()+1);
 
-    return;
+    return 0;
 }

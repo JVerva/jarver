@@ -57,10 +57,13 @@ int main(){
     std::cin >> message;
     
     int bytes_sent = 0;
+    int message_size = message.size()+1;
+    std::string final_message = (char*)message_size + message;
+    message_size += sizeof (int);
 
     do{
-        bytes_sent += send(socketfd, message.c_str() + bytes_sent, message.size()+1-bytes_sent, 0);
-    }while(bytes_sent < message.size()+1);
+        bytes_sent += send(socketfd, final_message.c_str() + bytes_sent, message_size - bytes_sent, 0);
+    }while(bytes_sent < message_size);
 
     return 0;
 }

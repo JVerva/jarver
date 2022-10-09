@@ -14,7 +14,6 @@ BINDIR := bin
 LIBDIR := lib
 
 FLAGS := 
-A := 
 
 #build target
 $(CLIENT): $(CLIENT_DEPENDENCIES)
@@ -48,17 +47,6 @@ setup:
 permissions:
 	chmod a+x $(BINDIR)/$(CLIENT)
 	chmod a+x $(BINDIR)/$(SERVER)
-
-
-#create delete files
-c:
-	mkdir -p $(shell dirname $(SRCDIR)/$(A).$(EXTENSION))
-	touch $(SRCDIR)/$(A).$(EXTENSION)
-	mkdir -p $(shell dirname $(INCLUDEDIR)/$(A).$(EXTENSION))
-	touch $(INCLUDEDIR)/$(A).h
-r:
-	rm $(SRCDIR)/$(A).$(EXTENSION)
-	rm $(INCLUDEDIR)/$(A).h
 
 
 #exec with std args

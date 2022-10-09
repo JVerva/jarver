@@ -55,6 +55,8 @@ int main(){
         if(connection_socketfd = accept(socketfd, (struct sockaddr*) &claddr, &addr_size) == -1){
             std::cerr << "no connection to accept";
             continue;
+        }else{
+            break;
         }
     }
 

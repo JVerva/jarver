@@ -13,7 +13,26 @@ SRCDIR := src
 BINDIR := bin
 LIBDIR := lib
 
-FLAGS := 
+SRCFILES := $(shell find $(SRCDIR) -type f \( -iname "*.$(EXTENSION)" \) -exec basename \{} \;)
+HEADERFILES := $(shell find $(INCLUDEDIR) -type f \( -iname "*.h" \) -exec basename \{} \;)
+OBJFILES := $(SRCFILES:%.$(EXTENSION)=%.o)
+
+FLAGS := -std=c++20
+DEBUGFLAGS := -g -Wall
+RELEASEFLAGS := -O3
+
+
+client_debug: FLAGS += $(DEBUGFLAGS)
+client_debug: clean setup $(CLIENT)
+
+client_release: FLAGS += $(RELEASEFLAGS)
+client_release: clean setup $(CLIENT)
+
+server_debug: FLAGS += $(DEBUGFLAGS)
+server_debug: clean setup $(SERVER)
+
+server_release: FLAGS += $(RELEASEFLAGS)
+server_release: clean setup $(SERVER)
 
 #build target
 $(CLIENT): $(CLIENT_DEPENDENCIES)
@@ -60,4 +79,22 @@ exec_client:
 #get todo list
 todo:
 	@grep -R TODO -n | tr -s ' ' | grep -v makefile
+
+
+#print makefile info
+info:
+	@echo CLIENT = $(CLIENT)
+	@echo SERVER = $(SERVER)
+	@echo EXTENSION = $(EXTENSION)
+	@echo INCLUDEDIR = $(INCLUDEDIR)
+	@echo OBJDIR = $(OBJDIR)
+	@echo SRCDIR = $(SRCDIR)
+	@echo BINDIR = $(BINDIR)
+	@echo LIBDIR = $(LIBDIR)
+	@echo SRCFILES = $(SRCFILES)
+	@echo HEADERFILES = $(HEADERFILES)
+	@echo MACROS = $(MACROS)
+	@echo DEBUGFLAGS = $(DEBUGFLAGS)
+	@echo RELEASEFLAGS = $(RELEASEFLAGS)
+	@echo CC = $(CC)
 	
